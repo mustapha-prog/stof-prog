@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>حجز ملعب</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="background-image: url('{{ url_for('static', filename='tiran.jpg') }}'); background-size: cover; background-position: center;">
+    <div class="form-container">
+        <h2 class="form-title">حجز ملعب</h2>
+        <form id="bookingForm">
+            <input type="text" name="fullname" placeholder="الاسم الكامل" required class="input-field">
+            <input type="text" name="phone" placeholder="رقم الهاتف" required class="input-field" id="phone">
+            <input type="date" name="day" required class="input-field" min="{{ current_date }}">
+            <select name="hour" required class="input-field">
+                <option value="" disabled selected>اختر الساعة</option>
+                {% for h in range(9, 24) %}
+                    <option value="{{ "%02d:00" % h }}">{{ "%02d:00" % h }}</option>
+                {% endfor %}
+                <option value="00:00">00:00</option>
+            </select>
+            <select name="field" required class="input-field">
+                <option value="" disabled selected>اختر الملعب</option>
+                <option value="1">الملعب 1</option>
+                <option value="2">الملعب 2</option>
+            </select>
+            <button type="submit" class="btn">أحجز الآن</button>
+        </form>
+        <a href="/" class="small-btn">العودة إلى الرئيسية</a>
+    </div>
+
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            // التحقق من صحة رقم الهاتف
+            const phone = document.getElementById('phone').value;
+            const phoneRegex = /^0\d{9}$/; // تحقق من أن الرقم يبدأ بـ 0 ويحتوي على 10 أرقام
+
+            if (!phoneRegex.test(phone)) {
+                Swal.fire({
+                    title: 'خطأ!',
+                    text: 'رقم الهاتف يجب أن يبدأ بـ 0 ويحتوي على 10 أرقام.',
+                    icon: 'error',
+                    confirmButtonText: 'موافق'
+                });
+                return;  // إذا كانت الصيغة غير صحيحة، لا يتم إرسال النموذج
+            }
+
+            const formData = new FormData(this);
+
+            const response = await fetch('/submit_booking', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                Swal.fire({
+                    title: 'نجاح!',
+                    text: result.message,
+                    icon: 'success',
+                    confirmButtonText: 'موافق'
+                }).then(() => {
+                    window.location.href = "/";
+                });
+            } else {
+                Swal.fire({
+                    title: 'خطأ!',
+                    text: result.message,
+                    icon: 'error',
+                    confirmButtonText: 'موافق'
+                });
+            }
+        });
+    </script>
+</body>
+</html>

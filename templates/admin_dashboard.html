@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة تحكم المدير</title>
+    <style>
+        body {
+            background-color: #d0e7ff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+            margin-bottom: 30px;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 28px;
+            color: #007BFF;
+        }
+        .home-button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0px 0px 10px gray;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        a.button {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 2px;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .confirm { background-color: #28a745; }
+        .edit { background-color: #ffc107; }
+        .delete { background-color: #dc3545; }
+        .whatsapp { background-color: #25D366; }
+        .logout {
+            margin-top: 20px;
+            display: inline-block;
+            background-color: #ff5722;
+            padding: 10px 20px;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>📋 لوحة تحكم المدير</h2>
+    <a href="{{ url_for('index') }}" class="home-button">🏠 العودة للرئيسية</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>الاسم الكامل</th>
+            <th>رقم الهاتف</th>
+            <th>اليوم</th>
+            <th>الساعة</th>
+            <th>الملعب</th>
+            <th>تم التأكيد</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking['الاسم الكامل'] }}</td>
+            <td>0{{ booking['رقم الهاتف'] }}</td>
+            <td>{{ booking['اليوم'] }}</td>
+            <td>{{ booking['الساعة'] }}</td>
+            <td>{{ booking['الملعب'] }}</td>
+            <td>{% if booking['تم التأكيد'] %}✅{% else %}❌{% endif %}</td>
+            <td>
+                {% if not booking['تم التأكيد'] %}
+                <a class="button confirm" href="{{ url_for('confirm_booking', booking_id=loop.index0) }}">تأكيد</a>
+                {% endif %}
+                <a class="button edit" href="{{ url_for('edit_booking', booking_id=loop.index0) }}">تعديل</a>
+                <a class="button delete" href="{{ url_for('delete_booking', booking_id=loop.index0) }}">حذف</a>
+                <!-- زر تأكيد عبر واتساب -->
+                {% set date_parts = booking['اليوم'].split('-') %}
+                {% set formatted_date = date_parts[2] ~ '/' ~ date_parts[1] ~ '/' ~ date_parts[0] %}
+                <a class="button whatsapp" href="#" onclick="sendWhatsapp({{ booking['رقم الهاتف'] }}, '{{ formatted_date }}', '{{ booking['الساعة'] }}', '{{ booking['الاسم الكامل'] }}', '{{ booking['الملعب'] }}')">
+                    تأكيد عبر واتساب
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<br>
+<a href="{{ url_for('admin_logout') }}" class="logout">🚪 تسجيل الخروج</a>
+
+<script>
+    function sendWhatsapp(phone, date, hour, name, field) {
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        var message = "مرحباً%20" + name + "،%20تم%20تأكيد%20حجزك%20ليوم%20" + date + "%20الساعة%20" + hour + "%20في%20الملعب%20رقم%20" + field + "%20.شكراً%20لك،%20ننتظر%20اجابتك%20بالموافقة!";
+
+        // التحقق إذا كان المستخدم يستخدم هاتف أو جهاز كمبيوتر
+        if (/android/i.test(userAgent) || /iPhone|iPad|iPod/i.test(userAgent)) {
+            window.location.href = "whatsapp://send?phone=212" + phone + "&text=" + message; // التطبيق على الهاتف
+        } else {
+            window.open("https://web.whatsapp.com/send?phone=212" + phone + "&text=" + message, "_blank"); // نسخة الكمبيوتر
+        }
+    }
+</script>
+
+</body>
+</html>

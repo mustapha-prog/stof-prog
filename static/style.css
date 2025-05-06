@@ -1,0 +1,105 @@
+body {
+    margin: 0;
+    font-family: 'Cairo', sans-serif;
+    background-color: #e3f2fd;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.form-container {
+    max-width: 500px;
+    margin: 80px auto;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.form-title {
+    margin-bottom: 30px;
+    font-size: 28px;
+    color: #0077b6;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.input-field:focus {
+    border-color: #0077b6;
+    outline: none;
+    box-shadow: 0 0 8px #90e0ef;
+}
+
+.btn {
+    width: 100%;
+    background-color: #00b4d8;
+    color: white;
+    padding: 12px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background-color: #0096c7;
+}
+
+.small-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 8px 20px;
+    background-color: #90e0ef;
+    color: #000;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.small-btn:hover {
+    background-color: #00b4d8;
+    color: white;
+}
+
+h3 {
+    margin-top: 30px;
+    color: #03045e;
+}
+
+/* مظهر صناديق الساعات */
+.hours-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.hour-box {
+    padding: 10px 15px;
+    border-radius: 10px;
+    background-color: #b2f2bb;
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.hour-box.booked {
+    background-color: #ffa8a8;
+}
+
+.hour-box:hover {
+    transform: scale(1.05);
+}
